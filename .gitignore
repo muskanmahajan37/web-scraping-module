@@ -103,12 +103,15 @@ celerybeat.pid
 
 # Environments
 .env
+.Lambo4me
 .venv
 env/
+Lambo4me/
 venv/
 ENV/
 env.bak/
 venv.bak/
+Lambo4me.bak/
 
 # Spyder project settings
 .spyderproject
