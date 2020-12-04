@@ -18,14 +18,14 @@ class Currency(models.Model):
         ('GBP', 'GBP'),
         ('SupEuro', 'SupremeEuro'),
     ]
-    name = models.CharField(choices=CURRENCY_CHOICES)
+    name = models.CharField(choices=CURRENCY_CHOICES, unique=True, primary_key=True)
     exchange_rate_to_pln = models.FloatField()
 
 
 class AbstractItem(models.Model):
     product_name = models.CharField(max_length=200, default='Unrecognised Item', unique=False)
     price = models.PositiveIntegerField(unique=False)
-    currency = models.ForeignKey(Currency, on_delete=models.SET_DEFAULT(), default='PLN')
+    currency = models.ForeignKey(Currency, on_delete=models.SET('PLN'), default='PLN')
     url = models.CharField()
     site_name = models.CharField(max_length=50)
     date = models.DateTimeField(default=timezone.now)
