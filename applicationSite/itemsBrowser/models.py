@@ -18,7 +18,7 @@ class Currency(models.Model):
         ('GBP', 'GBP'),
         ('SupEuro', 'SupremeEuro'),
     ]
-    name = models.CharField(choices=CURRENCY_CHOICES, unique=True, primary_key=True)
+    name = models.CharField(choices=CURRENCY_CHOICES, unique=True, primary_key=True, max_length=10)
     exchange_rate_to_pln = models.FloatField()
 
 
@@ -26,7 +26,7 @@ class AbstractItem(models.Model):
     product_name = models.CharField(max_length=200, default='Unrecognised Item', unique=False)
     price = models.PositiveIntegerField(unique=False)
     currency = models.ForeignKey(Currency, on_delete=models.SET('PLN'), default='PLN')
-    url = models.CharField()
+    url = models.CharField(max_length=300)
     site_name = models.CharField(max_length=50)
     date = models.DateTimeField(default=timezone.now)
 
@@ -40,15 +40,17 @@ class Clothes(AbstractItem):
         ('XL', 'XL'),
         ('XXL', 'XXL'),
     ]
-    brand = models.CharField()
-    size = models.CharField(choices=SIZE_CHOICES)
+    brand = models.CharField(max_length=50)
+    size = models.CharField(choices=SIZE_CHOICES, max_length=4)
     image = models.ImageField()
 
 
-class Boots(Clothes):
+class Boots(AbstractItem):
     SIZE_CHOICES = [
         ('37', '37'), ('37.5', '37.5'), ('38', '38'), ('38.5', '38.5'), ('39', '39'), ('39.5', '39.5'),
         ('40', '40'), ('40.5', '40.5'), ('41', '41'), ('41.5', '41.5'), ('42', '42'), ('42.5', '42.5'),
         ('43', '43'), ('44', '44'), ('44.5', '44.5'), ('45', '45'), ('45.5', '45.5')
     ]
-    size = models.CharField(choices=SIZE_CHOICES)
+    size = models.CharField(choices=SIZE_CHOICES, max_length=5)
+    image = models.ImageField()
+    brand = models.CharField(max_length=50)
