@@ -25,7 +25,7 @@ class Currency(models.Model):
 class AbstractItem(models.Model):
     product_name = models.CharField(max_length=200, default='Unrecognised Item', unique=False)
     price = models.PositiveIntegerField(unique=False)
-    currency = models.ForeignKey()
+    currency = models.ForeignKey(Currency, on_delete=models.SET_DEFAULT(), default='PLN')
     url = models.CharField()
     site_name = models.CharField(max_length=50)
     date = models.DateTimeField(default=timezone.now)
