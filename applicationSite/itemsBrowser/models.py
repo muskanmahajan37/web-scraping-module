@@ -5,14 +5,26 @@ import json
 
 # Create your models here.
 class RawData(models.Model):
+    unique_id = models.CharField(max_length=100, null=True)
     data = models.TextField()
-    date = models.DateTimeField(default=timezone.now())
+    date = models.DateTimeField(default=timezone.now)
+
+    @property
+    def to_dict(self):
+        data = {
+            'data': json.loads(self.data),
+            'date': self.date
+        }
+        return data
+
+    def __str__(self):
+        return self.unique_id
 
 
-class Currency(models.Model):
+class Currencies(models.Model):
     CURRENCY_CHOICES = [
         ('PLN', 'PLN'),
-        ('PLN', 'EUR'),
+        ('EUR', 'EUR'),
         ('USD', 'USD'),
         ('JPY', 'JPY'),
         ('GBP', 'GBP'),
@@ -25,10 +37,12 @@ class Currency(models.Model):
 class AbstractItem(models.Model):
     product_name = models.CharField(max_length=200, default='Unrecognised Item', unique=False)
     price = models.PositiveIntegerField(unique=False)
-    currency = models.ForeignKey(Currency, on_delete=models.SET('PLN'), default='PLN')
+    currency = models.ForeignKey(Currencies, on_delete=models.SET('PLN'), default='PLN')
     url = models.CharField(max_length=300)
     site_name = models.CharField(max_length=50)
-    date = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        abstract = True
 
 
 class Clothes(AbstractItem):
@@ -39,18 +53,11 @@ class Clothes(AbstractItem):
         ('L', 'L'),
         ('XL', 'XL'),
         ('XXL', 'XXL'),
-    ]
-    brand = models.CharField(max_length=50)
-    size = models.CharField(choices=SIZE_CHOICES, max_length=4)
-    image = models.ImageField()
-
-
-class Boots(AbstractItem):
-    SIZE_CHOICES = [
         ('37', '37'), ('37.5', '37.5'), ('38', '38'), ('38.5', '38.5'), ('39', '39'), ('39.5', '39.5'),
         ('40', '40'), ('40.5', '40.5'), ('41', '41'), ('41.5', '41.5'), ('42', '42'), ('42.5', '42.5'),
         ('43', '43'), ('44', '44'), ('44.5', '44.5'), ('45', '45'), ('45.5', '45.5')
     ]
-    size = models.CharField(choices=SIZE_CHOICES, max_length=5)
-    image = models.ImageField()
     brand = models.CharField(max_length=50)
+    size = models.CharField(choices=SIZE_CHOICES, max_length=4)
+    image = models.ImageField()
+    date_added = models.DateTimeField(default=timezone.now)
