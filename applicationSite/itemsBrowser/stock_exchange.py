@@ -1,8 +1,13 @@
 import threading
-
+import json
 import requests
 from decouple import config
 from datetime import datetime
+
+
+def save_exchange(response):
+    with open('currencies.txt', 'w+') as output_file:
+        output_file.write(response)
 
 
 class StockRequester(threading.Thread):
@@ -25,8 +30,9 @@ class StockRequester(threading.Thread):
                 print('xd')
                 self.update = True
                 response = requests.request("GET", self.url)
+                save_exchange(response.text)
                 print(response.text)
 
 
-# stock_req = StockRequester(22, 53)
-# stock_req.start()
+stock_req = StockRequester(23, 18)
+stock_req.start()
