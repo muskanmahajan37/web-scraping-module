@@ -29,8 +29,3 @@ class StockRequester(threading.Thread):
                 self.update = True
                 response = requests.request("GET", self.url)
                 save_exchange(response.text)
-                print(response.text)
-
-
-stock_req = StockRequester(23, 18)
-stock_req.start()
