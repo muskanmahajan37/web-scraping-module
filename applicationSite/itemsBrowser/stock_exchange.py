@@ -12,10 +12,6 @@ def save_exchange(json_response):
     currencies['PLN'] = 1.0
     currencies['JPY'] = 0.037
 
-    for key in currencies:
-        inserted_data = (key, currencies[key])
-        print(inserted_data)
-
     try:
         connection = psycopg2.connect(user=config('DB_CURRENCY_UPDATER'),
                                       password=config('DB_CURRENCY_UPDATER_PASS'),
@@ -26,6 +22,7 @@ def save_exchange(json_response):
         select_query = """SELECT * FROM "itemsBrowser_currencies" """
         cursor.execute(select_query)
         curr_values = cursor.fetchall()
+
         if not curr_values:
             insert_query = """INSERT INTO "itemsBrowser_currencies" (currency_name, exchange_rate_to_pln) VALUES  (%s, %s)"""
             for key in currencies:
@@ -65,9 +62,8 @@ class StockRequester(threading.Thread):
             if datetime.now().strftime('%H:%M:%S') == f'{self.hour}:{self.minutes}:00' and not self.update:
                 self.update = True
                 response = requests.request("GET", self.url)
-                print(response.text)
                 save_exchange(response.text)
 
 
-sr = StockRequester('16', '04')
+sr = StockRequester('11', '00')
 sr.start()
