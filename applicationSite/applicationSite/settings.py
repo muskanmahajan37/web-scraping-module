@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     'accountsManager',
     'taskManager',
+    'itemsBrowser',
 ]
 
 MIDDLEWARE = [
