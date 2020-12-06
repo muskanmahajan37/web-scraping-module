@@ -39,7 +39,7 @@ def update_exchange_rates(json_response):
             print('Error occurred during inserting data to database in currency module', insert_error)
 
 
-class StockRequester():
+class StockRequester:
     def __init__(self):
         self.url = f'https://free.currconv.com/api/v7/convert?q=USD_PLN,EUR_PLN&compact=ultra&apiKey=' + \
                    f'{config("CURRENCY_API_KEY")}'
