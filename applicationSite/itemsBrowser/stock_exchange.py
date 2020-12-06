@@ -1,4 +1,3 @@
-import threading
 import json
 import requests
 import psycopg2
@@ -6,11 +5,11 @@ from decouple import config
 from datetime import datetime
 
 
-def save_exchange(json_response):
+def update_exchange_rates(json_response):
     currencies = json.loads(json_response)
-    currencies['SupEuro'] = 4.732
+    currencies['SupEuro'] = currencies['EUR_PLN'] + 0.3
     currencies['PLN'] = 1.0
-    currencies['JPY'] = 0.037
+    currencies['JPY'] = currencies['USD_PLN'] / 102
 
     try:
         connection = psycopg2.connect(user=config('DB_CURRENCY_UPDATER'),
@@ -38,32 +37,25 @@ def save_exchange(json_response):
     except(Exception, psycopg2.Error) as insert_error:
         if (connection):
             print('Error occurred during inserting data to database in currency module', insert_error)
-    finally:
-        if (connection):
-            cursor.close()
-            connection.close()
 
 
-class StockRequester(threading.Thread):
-    def __init__(self, hour='8', minutes='55'):
-        threading.Thread.__init__(self)
+class StockRequester():
+    def __init__(self):
         self.url = f'https://free.currconv.com/api/v7/convert?q=USD_PLN,EUR_PLN&compact=ultra&apiKey=' + \
                    f'{config("CURRENCY_API_KEY")}'
-        self.hour = hour
-        self.minutes = minutes
-        self.update = False
-        self.date_day = datetime.now().strftime('%D')
+        self.request_time = datetime.now().strftime('%H:%M')
+        self.request_flag = False
+        self.date = datetime.now()
 
-    def run(self):
-        while True:
-            if self.date_day != datetime.now().strftime('%D'):
-                self.update = False
-                self.date_day = datetime.now().strftime('%D')
-            if datetime.now().strftime('%H:%M:%S') == f'{self.hour}:{self.minutes}:00' and not self.update:
-                self.update = True
-                response = requests.request("GET", self.url)
-                save_exchange(response.text)
+    def is_applicable(self):
+        if self.request_time != datetime.now().strftime('%H:%M'):
+            self.request_time = datetime.now().strftime('%H:%M')
+            self.request_flag = True
+        if self.request_flag:
+            self.request_flag = False
+            self.send_request()
 
+    def send_request(self):
+        response = requests.request("GET", self.url)
+        update_exchange_rates(response.text)
 
-sr = StockRequester('11', '00')
-sr.start()
