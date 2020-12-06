@@ -25,7 +25,6 @@ class StockRequester(threading.Thread):
             if self.date_day != datetime.now().strftime('%D'):
                 self.update = False
                 self.date_day = datetime.now().strftime('%D')
-                print("Day Changed")
             if datetime.now().strftime('%H:%M:%S') == f'{self.hour}:{self.minutes}:20' and not self.update:
                 self.update = True
                 response = requests.request("GET", self.url)
