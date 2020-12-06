@@ -23,14 +23,14 @@ class RawData(models.Model):
 
 class Currencies(models.Model):
     CURRENCY_CHOICES = [
-        ('PLN', 'PLN'),
-        ('EUR', 'EUR'),
-        ('USD', 'USD'),
-        ('JPY', 'JPY'),
-        ('GBP', 'GBP'),
+        ('PLN_PLN', 'PLN'),
+        ('EUR_PLN', 'EUR'),
+        ('USD_PLN', 'USD'),
+        ('JPY_PLN', 'JPY'),
+        ('GBP_PLN', 'GBP'),
         ('SupEuro', 'SupremeEuro'),
     ]
-    name = models.CharField(choices=CURRENCY_CHOICES, unique=True, primary_key=True, max_length=10)
+    currency_name = models.CharField(choices=CURRENCY_CHOICES, unique=True, primary_key=True, max_length=10)
     exchange_rate_to_pln = models.FloatField()
 
 
