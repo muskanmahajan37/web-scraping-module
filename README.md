@@ -1,2 +1,2 @@
-# lmbi4u-py
-Purchase aiding site, so let me but it for you
+# Sup scraper
+The part is responsible for scraping data from Supreme Community straight to the database via Scrapy pipeline.
